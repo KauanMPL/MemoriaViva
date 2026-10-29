@@ -1,0 +1,13 @@
+﻿node_modules/
+.expo/
+dist/
+build/
+coverage/
+.env
+.env.*
+!.env.example
+!.env.*.example
+*.log
+usuarios.txt
+*.dump
+*.sql
