@@ -1,8 +1,7 @@
-// Configuração e funções compartilhadas da API do Memória Viva.
-// No Snack, substitua por uma URL HTTPS pública do backend se necessário.
-const API_URL =
+const API_URL = (
   process.env.EXPO_PUBLIC_API_URL ||
-  "https://3000-illevww4j4vkivja68mfa-cc500f3b.us1.manus.computer";
+  "https://memoriaviva-9ft2.onrender.com"
+).replace(/\/$/, "");
 export const COLORS = {
   ink: "#18383c",
   teal: "#0b4f59",
