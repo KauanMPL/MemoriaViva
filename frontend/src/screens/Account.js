@@ -5,8 +5,6 @@ import { api, COLORS } from "../services/api";
 import styles from "../theme/styles";
 import { Screen, Button, Field, Icon, Avatar } from "../components/ui";
 
-// Gera as iniciais de um nome.
-// Exemplo: "Kauan Pavaneli" -> "KP"
 function initials(name) {
   if (!name || typeof name !== "string") {
     return "?";
@@ -98,12 +96,26 @@ export function Members({ family, token, members = [], onRefresh }) {
         ) : (
           members.map((member) => {
             const user = member.user || {};
+
             const memberName = user.name || user.nome || "Familiar";
             const memberEmail = user.email || "";
 
+            // Aceita os formatos de foto retornados pela API.
+            const memberPhoto =
+              user.photoUrl ||
+              user.foto_perfil ||
+              user.fotoPerfil ||
+              member.photoUrl ||
+              member.foto_perfil ||
+              member.fotoPerfil ||
+              null;
+
             return (
               <View style={styles.memberRow} key={member.id}>
-                <Avatar text={initials(memberName)} />
+                <Avatar
+                  text={initials(memberName)}
+                  photoUrl={memberPhoto}
+                />
 
                 <View style={{ flex: 1 }}>
                   <Text style={styles.memberName}>{memberName}</Text>
