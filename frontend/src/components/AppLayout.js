@@ -15,6 +15,7 @@ import { Icon, Avatar } from "./ui";
 export function Header({ user, family, setScreen }) {
   const userName = user?.name || user?.nome || "Usuário";
   const familyName = family?.name || "Memória Viva";
+  const photoUrl = user?.photoUrl || user?.foto_perfil || null;
 
   const openProfile = () => {
     if (typeof setScreen === "function") {
@@ -25,9 +26,7 @@ export function Header({ user, family, setScreen }) {
   return (
     <View style={styles.appHeader}>
       <View style={{ flex: 1 }}>
-        <Text style={styles.eyebrow}>
-          FAMÍLIA ATIVA
-        </Text>
+        <Text style={styles.eyebrow}>FAMÍLIA ATIVA</Text>
 
         <Text
           style={styles.headerTitle}
@@ -53,6 +52,7 @@ export function Header({ user, family, setScreen }) {
       >
         <Avatar
           text={initials(userName)}
+          photoUrl={photoUrl}
           color={COLORS.terracotta}
         />
       </Pressable>
@@ -66,7 +66,7 @@ export function Tabs({ current, setScreen }) {
     { key: "timeline", label: "Timeline", icon: "clock" },
     { key: "members", label: "Membros", icon: "users" },
     { key: "settings", label: "Ajustes", icon: "settings" },
-    { key: "profile", label: "Perfil", icon: "user-round" },
+    { key: "profile", label: "Perfil", icon: "user" },
   ];
 
   return (
@@ -80,9 +80,7 @@ export function Tabs({ current, setScreen }) {
             onPress={() => setScreen(tab.key)}
             style={({ pressed }) => [
               styles.tab,
-              {
-                opacity: pressed ? 0.65 : 1,
-              },
+              { opacity: pressed ? 0.65 : 1 },
             ]}
             accessibilityRole="button"
             accessibilityLabel={tab.label}
@@ -92,11 +90,7 @@ export function Tabs({ current, setScreen }) {
             <Icon
               name={tab.icon}
               size={19}
-              color={
-                active
-                  ? COLORS.teal
-                  : "#9aa8a2"
-              }
+              color={active ? COLORS.teal : "#9aa8a2"}
             />
 
             <Text
@@ -150,9 +144,7 @@ export function AppLayout({
         <Pressable
           style={({ pressed }) => [
             styles.fab,
-            {
-              opacity: pressed ? 0.75 : 1,
-            },
+            { opacity: pressed ? 0.75 : 1 },
           ]}
           onPress={onAdd}
           accessibilityRole="button"

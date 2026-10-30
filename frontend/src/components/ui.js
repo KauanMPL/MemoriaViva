@@ -1,7 +1,18 @@
+
 import React from "react";
-import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, StatusBar, Text, TextInput, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  SafeAreaView,
+  ScrollView,
+  StatusBar,
+  Text,
+  TextInput,
+  View,
+} from "react-native";
 import { Feather } from "@expo/vector-icons";
-import { COLORS } from "../services/api";
+import { COLORS, assetUrl } from "../services/api";
 import styles from "../theme/styles";
 
 export function Icon({ name, size = 18, color = COLORS.ink }) {
@@ -25,6 +36,7 @@ export function Logo({ light = false }) {
           ]}
         />
       </View>
+
       <Text style={[styles.logoText, light && { color: COLORS.white }]}>
         memória <Text style={styles.logoItalic}>viva</Text>
       </Text>
@@ -72,6 +84,7 @@ export function Button({
               {children}
             </Text>
           )}
+
           {icon && (
             <Icon
               name={icon}
@@ -97,6 +110,7 @@ export function Field({
   return (
     <View style={styles.field}>
       <Text style={styles.fieldLabel}>{label}</Text>
+
       <TextInput
         value={value}
         onChangeText={onChangeText}
@@ -115,6 +129,7 @@ export function Screen({ children, scroll = true }) {
   return (
     <SafeAreaView style={styles.safe}>
       <StatusBar barStyle="dark-content" backgroundColor={COLORS.paper} />
+
       {scroll ? (
         <ScrollView
           contentContainerStyle={styles.screenContent}
@@ -139,6 +154,7 @@ export function TopBar({ title, onBack, action }) {
       ) : (
         <Logo />
       )}
+
       {title && <Text style={styles.topTitle}>{title}</Text>}
       {action || <View style={{ width: 36 }} />}
     </View>
@@ -161,13 +177,16 @@ export function EmptyState({ onCreate }) {
       <View style={styles.emptyIcon}>
         <Icon name="star" size={22} color={COLORS.teal} />
       </View>
+
       <Text style={styles.emptyTitle}>
         O primeiro capítulo começa com você.
       </Text>
+
       <Text style={styles.emptyText}>
         Adicione uma lembrança, uma foto ou uma história que merece ser
         guardada.
       </Text>
+
       <Button onPress={onCreate} icon="arrow-right">
         Criar primeira memória
       </Button>
@@ -175,16 +194,40 @@ export function EmptyState({ onCreate }) {
   );
 }
 
-export function Avatar({ text, color = "#62898a", small = false }) {
+export function Avatar({
+  text,
+  color = "#62898a",
+  small = false,
+  photoUrl = null,
+}) {
+  const imageUrl = photoUrl ? assetUrl(photoUrl) : null;
+
   return (
     <View
       style={[
         styles.avatar,
         small && styles.avatarSmall,
-        { backgroundColor: color },
+        {
+          backgroundColor: color,
+          overflow: "hidden",
+          alignItems: "center",
+          justifyContent: "center",
+        },
       ]}
     >
-      <Text style={styles.avatarText}>{text}</Text>
+      {imageUrl ? (
+        <Image
+          source={{ uri: imageUrl }}
+          style={{
+            width: "100%",
+            height: "100%",
+            borderRadius: 999,
+          }}
+          resizeMode="cover"
+        />
+      ) : (
+        <Text style={styles.avatarText}>{text}</Text>
+      )}
     </View>
   );
 }
