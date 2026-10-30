@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Platform } from "react-native";
 import {
   Alert,
   Image,
@@ -33,11 +34,11 @@ export function Profile({
   const displayEmail = user?.email || "E-mail não informado";
   const photoUrl = user?.photoUrl || user?.foto_perfil || null;
 
-const confirmLogout = () => {
-  if (typeof onLogout === "function") {
-    onLogout();
-  }
-};
+  const confirmLogout = () => {
+    if (typeof onLogout === "function") {
+      onLogout();
+    }
+  };
 
   const saveProfile = async () => {
     if (name.trim().length < 2) {
@@ -77,6 +78,7 @@ const confirmLogout = () => {
     }
   };
 
+
   const choosePhoto = async () => {
     try {
       const permission =
@@ -101,6 +103,7 @@ const confirmLogout = () => {
 
       const asset = result.assets[0];
       const extension = asset.fileName?.split(".").pop()?.toLowerCase();
+
       const mimeType =
         asset.mimeType ||
         (extension === "png"
@@ -111,11 +114,28 @@ const confirmLogout = () => {
 
       const formData = new FormData();
 
-      formData.append("file", {
-        uri: asset.uri,
-        name: asset.fileName || `perfil-${Date.now()}.jpg`,
-        type: mimeType,
-      });
+      if (Platform.OS === "web") {
+        // Na web, envia o arquivo real, não o objeto { uri, name, type }.
+        let file = asset.file;
+
+        if (!file) {
+          const imageResponse = await fetch(asset.uri);
+          file = await imageResponse.blob();
+        }
+
+        formData.append(
+          "file",
+          file,
+          asset.fileName || `perfil-${Date.now()}.jpg`,
+        );
+      } else {
+        // No Android/iOS, utiliza o formato do React Native.
+        formData.append("file", {
+          uri: asset.uri,
+          name: asset.fileName || `perfil-${Date.now()}.jpg`,
+          type: mimeType,
+        });
+      }
 
       setUploadingPhoto(true);
 
@@ -128,6 +148,8 @@ const confirmLogout = () => {
 
       Alert.alert("Foto atualizada", "Sua foto de perfil foi salva.");
     } catch (error) {
+      console.error("Erro ao enviar foto:", error);
+
       Alert.alert(
         "Erro ao enviar foto",
         error.message || "Não foi possível atualizar sua foto.",
@@ -136,6 +158,7 @@ const confirmLogout = () => {
       setUploadingPhoto(false);
     }
   };
+
 
   return (
     <Screen>
@@ -229,7 +252,7 @@ const confirmLogout = () => {
               gap: 6,
             }}
           >
-            <Icon name="shield-check" size={15} color={COLORS.teal} />
+            <Icon name="shield" size={15} color={COLORS.teal} />
             <Text style={{ color: COLORS.teal, fontSize: 12, fontWeight: "600" }}>
               Conta conectada
             </Text>
@@ -311,7 +334,7 @@ const confirmLogout = () => {
           </View>
         ) : (
           <Button
-            icon="pencil"
+            icon="edit-2"
             onPress={() => setEditing(true)}
           >
             Editar dados da conta
